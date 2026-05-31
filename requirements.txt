@@ -1,0 +1,14 @@
+# Desktop File Organizer – Python dependencies
+#
+# All core functionality uses only the Python standard library
+# (pathlib, shutil, json, hashlib, csv, argparse, fnmatch, re, ctypes).
+# No third-party packages are required to run organize.py.
+
+# --------------------------
+# Development / test tooling
+# --------------------------
+pytest>=7.4.0          # test runner
+
+# Optional quality-of-life enhancements (uncomment to enable)
+# colorama>=0.4.6      # coloured terminal output on Windows
+# tqdm>=4.66.0         # progress bars for large batches

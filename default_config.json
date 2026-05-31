@@ -1,0 +1,18 @@
+{
+  "categories": {
+    "images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp", ".ico", ".heic", ".tiff", ".tif"],
+    "documents": [".pdf", ".doc", ".docx", ".txt", ".md", ".rtf", ".odt", ".tex", ".wpd"],
+    "spreadsheets": [".xls", ".xlsx", ".csv", ".ods", ".xlsm"],
+    "presentations": [".ppt", ".pptx", ".key", ".odp"],
+    "audio": [".mp3", ".wav", ".flac", ".aac", ".ogg", ".m4a", ".wma", ".opus"],
+    "video": [".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg"],
+    "archives": [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz", ".iso"],
+    "executables": [".exe", ".msi", ".app", ".deb", ".rpm", ".dmg", ".apk"],
+    "code": [".py", ".js", ".ts", ".html", ".css", ".java", ".cpp", ".c", ".h", ".json", ".xml", ".yml", ".yaml", ".sh", ".bat", ".rb", ".go", ".rs", ".php"],
+    "fonts": [".ttf", ".otf", ".woff", ".woff2"],
+    "ebooks": [".epub", ".mobi", ".azw", ".azw3"]
+  },
+  "default_mode": "copy",
+  "duplicate_strategy": "rename",
+  "exclude_patterns": ["*.tmp", "*.cache", "desktop.ini", ".DS_Store", "Thumbs.db", "*.lnk", "*.swp", "*.swo"]
+}
