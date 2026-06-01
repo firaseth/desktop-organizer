@@ -1,4 +1,5 @@
 # 🗂️ Desktop File Organizer
+![organizer.png ](‪D:\Desktop\organizer.png)
 
 A safe, zero-dependency CLI tool that automatically sorts files into typed
 sub-folders — images, documents, videos, audio, code, and more — with
