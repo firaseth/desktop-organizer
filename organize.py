@@ -262,32 +262,45 @@ def _unschedule_linux() -> int:
 
 def _schedule_windows(source_dir: Path, output_dir: Path,
                       mode: str, dup: str, recursive: bool) -> int:
-    run_args = _build_run_args(source_dir, output_dir, mode, dup, recursive)
-    # schtasks needs the program and arguments separated
-    program   = run_args[0]
-    arguments = " ".join(f'"{a}"' if " " in a else a for a in run_args[1:])
-    log       = _log_path()
+    log      = _log_path()
+    bat_path = Path(os.environ.get("APPDATA", "C:\\Users\\Public")) \
+               / "desktop-organizer" / "run.bat"
+    bat_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Wrap in a cmd /c to capture output to log
-    full_cmd = f'cmd /c "{program} {arguments} >> {log} 2>&1"'
+    # Build the command line for the batch file
+    rec_flag = " --recursive" if recursive else ""
+    bat_content = (
+        f'@echo off\n'
+        f'"{_python_exe()}" "{_script_path()}" '
+        f'"{source_dir}" '
+        f'--output "{output_dir}" '
+        f'--mode {mode} '
+        f'--duplicate-strategy {dup}'
+        f'{rec_flag} >> "{log}" 2>&1\n'
+    )
+    bat_path.write_text(bat_content, encoding="utf-8")
 
-    cmds = [
-        # Delete existing task silently
+    # Delete old task silently (ignore error if it doesn't exist)
+    subprocess.run(
         f'schtasks /Delete /TN "{TASK_NAME}" /F',
-        # Create new task: run every 6 hours
-        (f'schtasks /Create /TN "{TASK_NAME}" '
-         f'/TR "{full_cmd}" '
-         f'/SC HOURLY /MO 6 '
-         f'/RL HIGHEST /F'),
-    ]
-    for c in cmds:
-        result = subprocess.run(c, shell=True, capture_output=True, text=True)
-        # First command (Delete) may fail if task doesn't exist — that's fine
-        if result.returncode != 0 and "Delete" not in c:
-            print(f"  ERROR: {result.stderr.strip()}")
-            return 1
+        shell=True, capture_output=True
+    )
+
+    # Create new task using the batch file
+    create_cmd = (
+        f'schtasks /Create /TN "{TASK_NAME}" '
+        f'/TR "{bat_path}" '
+        f'/SC HOURLY /MO 6 '
+        f'/RL HIGHEST /F'
+    )
+    result = subprocess.run(create_cmd, shell=True,
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"  ERROR: {result.stderr.strip() or result.stdout.strip()}")
+        return 1
 
     print(f"  ✅  Windows Task Scheduler task '{TASK_NAME}' installed.")
+    print(f"      Batch : {bat_path}")
     print(f"      Runs  : every 6 hours")
     print(f"      Logs  : {log}")
     print(f"      View  : schtasks /Query /TN \"{TASK_NAME}\" /FO LIST")
